@@ -17,7 +17,7 @@ table={}
 table['ip_table']='''
     CREATE TABLE IF NOT EXISTS ip_table(
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    ip VARCHAR(30) NOT NULL   
+    ip VARCHAR(40) NOT NULL   
     )ENGINE=INNODB CHARSET=UTF8 '''
 cursor.execute(table['ip_table'])
 
@@ -25,7 +25,7 @@ cursor.execute(table['ip_table'])
 def get_proxy(q):
     cnx=mysql.connector.connect(user='root',host='localhost',password='123456',database=filename)
     cursor=cnx.cursor()
-    for i in range(3000):
+    for i in range(100):
         if q is not None:
             proxy_entity=q.get()
             proxy_html=etree.HTML(proxy_entity.text)
@@ -44,10 +44,10 @@ def get_proxy(q):
         print('储存第{}页到数据库'.format(i))
 #定义初始页
 def get_response(q):
-    for i in range(3000):
+    for i in range(100):
         #尝试获取页面
         try:
-            proxy_entity=requests.get('https://www.kuaidaili.com/free/inha/{}/'.format(i))
+            proxy_entity=requests.get('https://www.kuaidaili.com/free/intr/{}/'.format(i))
         #网络错误    
         except requests.exceptions.ConnectionError:
             print('获取代理失败，检查网络')
@@ -67,7 +67,8 @@ if __name__=='__main__':
     p=multiprocessing.Process(target=get_proxy,args=(q,))
     r.start()
     p.start()
-    
+    r.join()
+    p.join()
     
             
             
